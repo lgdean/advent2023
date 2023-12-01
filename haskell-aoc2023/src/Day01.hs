@@ -1,4 +1,8 @@
-module Day01 where
+module Day01
+    (
+      doPart1,
+      doPart2
+    ) where
 
 import Data.Char (isDigit)
 
