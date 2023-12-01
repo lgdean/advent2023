@@ -14,10 +14,10 @@ doPart1 input =
   in sum nums
 
 numberFrom :: [Char] -> Int
-numberFrom [x,y] = read [x,y]
-numberFrom [x] = read [x,x]
-numberFrom (x:rest) = read [x, last rest]
 numberFrom [] = 0
+numberFrom [x] = read [x,x]
+numberFrom [x,y] = read [x,y] -- a special case of the next line, but I like it
+numberFrom (x:rest) = read [x, last rest]
 
 doPart2 :: [Char] -> Int
 doPart2 input =
