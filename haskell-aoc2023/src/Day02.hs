@@ -15,11 +15,9 @@ doPart1 input =
   in sum $ map fst $ filter isPossible allGames
 
 isAllowedFrom :: (Int, Int, Int) -> [(Int, Int, Int)] -> Bool
-isAllowedFrom _ [] = True
-isAllowedFrom (rTotal, gTotal, bTotal) ((r,g,b):_) | rTotal < r || gTotal < g || bTotal < b = False
-isAllowedFrom (rTotal, gTotal, bTotal) (_:rest) =
+isAllowedFrom (rTotal, gTotal, bTotal) handfuls =
   let tooBig (r,g,b) = rTotal < r || gTotal < g || bTotal < b
-  in not $ any tooBig rest
+  in not $ any tooBig handfuls
 
 doPart2 :: [Char] -> Int
 doPart2 input =
