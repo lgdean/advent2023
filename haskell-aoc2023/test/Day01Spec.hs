@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Day01Spec (spec) where
 
 import Test.Hspec
