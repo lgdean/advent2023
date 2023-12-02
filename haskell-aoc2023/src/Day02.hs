@@ -1,7 +1,7 @@
 module Day02
     (
       doPart1,
---      doPart2
+      doPart2
     ) where
 
 import Data.List.Split(splitOn)
@@ -21,8 +21,11 @@ isAllowedFrom (rTotal, gTotal, bTotal) ((r,g,b):_) | rTotal < r || gTotal < g ||
 isAllowedFrom (rTotal, gTotal, bTotal) ((r,g,b):rest) =
   isAllowedFrom (rTotal, gTotal, bTotal) rest
 
---doPart2 :: [Char] -> Int
---doPart2 input =
+doPart2 :: [Char] -> Int
+doPart2 input =
+  let allGames = map parseLine $ lines input
+      minimalSet game = foldl (\(a,b,c) (x,y,z) -> (max a x, max b y, max c z)) (0,0,0) $ snd game
+  in sum $ map (\(x,y,z) -> x*y*z) $ map minimalSet allGames
 
 -- use order R,G,B
 parseLine :: String -> (Int, [(Int, Int, Int)])
