@@ -14,11 +14,10 @@ doPart1 input =
       isPossible game = isAllowedFrom (12,13,14) $ snd game
   in sum $ map fst $ filter isPossible allGames
 
--- more complicated than needed, due to initial braino
 isAllowedFrom :: (Int, Int, Int) -> [(Int, Int, Int)] -> Bool
-isAllowedFrom (rTotal, gTotal, bTotal) [] = rTotal >= 0 && gTotal >= 0 && bTotal >= 0
+isAllowedFrom _ [] = True
 isAllowedFrom (rTotal, gTotal, bTotal) ((r,g,b):_) | rTotal < r || gTotal < g || bTotal < b = False
-isAllowedFrom (rTotal, gTotal, bTotal) ((r,g,b):rest) =
+isAllowedFrom (rTotal, gTotal, bTotal) (_:rest) =
   isAllowedFrom (rTotal, gTotal, bTotal) rest
 
 doPart2 :: [Char] -> Int
