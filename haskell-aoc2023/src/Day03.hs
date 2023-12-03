@@ -14,7 +14,7 @@ doPart1 input =
   let
       grid = parseGrid input
       allNumbers = findNumbers $ lines input
-      partNumbers = filter (hasNeighboringSymbol grid . snd) allNumbers
+      partNumbers = filter (hasAdjacentSymbol grid . snd) allNumbers
   in sum $ map fst partNumbers
 
 findNumbers :: [String] -> [(Int, [(Int, Int)])]
@@ -64,9 +64,8 @@ isSymbol :: Char -> Bool
 isSymbol '.' = False
 isSymbol c = not $ isDigit c
 
--- TODO today's puzzle uses the term "adjacent"
-hasNeighboringSymbol :: Map (Int, Int) Char -> [(Int, Int)] -> Bool
-hasNeighboringSymbol grid positions =
+hasAdjacentSymbol :: Map (Int, Int) Char -> [(Int, Int)] -> Bool
+hasAdjacentSymbol grid positions =
   let containsSymbol pos = isSymbol $ findWithDefault '.' pos grid
   in any containsSymbol $ allNeighborCoords positions
 
