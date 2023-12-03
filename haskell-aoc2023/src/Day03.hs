@@ -1,10 +1,11 @@
 module Day03
     (
       doPart1,
---      doPart2
+      doPart2
     ) where
 
 import Data.Char (isDigit)
+import Data.List (intersect)
 import Data.Map (Map, findWithDefault)
 import qualified Data.Map.Strict as Map
 
@@ -63,7 +64,21 @@ isSymbol :: Char -> Bool
 isSymbol '.' = False
 isSymbol c = not $ isDigit c
 
+-- TODO today's puzzle uses the term "adjacent"
 hasNeighboringSymbol :: Map (Int, Int) Char -> [(Int, Int)] -> Bool
 hasNeighboringSymbol grid positions =
   let containsSymbol pos = isSymbol $ findWithDefault '.' pos grid
   in any containsSymbol $ allNeighborCoords positions
+
+doPart2 :: [Char] -> Int
+doPart2 input =
+  let
+      grid = parseGrid input
+      allNumbers = findNumbers $ lines input
+      allStars = Map.filter (== '*') grid
+      adjacentNumbers starPos =
+          let neigbors = neighborCoords starPos
+              isAdjacent (_, numPos) = not . null $ intersect neigbors numPos
+          in map fst $ filter isAdjacent allNumbers
+      gears = filter ((== 2) . length) $ map adjacentNumbers (Map.keys allStars)
+  in sum $ map product gears
