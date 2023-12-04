@@ -13,11 +13,14 @@ doPart1 input =
   in sum $ map cardValue cards
 
 cardValue :: (Int, [Int], [Int]) -> Int
-cardValue (_, have, want) =
-  let commonNums = length $ intersect have want
-  in case commonNums of
+cardValue card =
+  case cardScore card of
     0 -> 0
-    _ -> 2 ^ (commonNums - 1)
+    x -> 2 ^ (x - 1)
+
+cardScore :: (Int, [Int], [Int]) -> Int
+cardScore (_, have, want) =
+  length $ intersect have want
 
 parseCard :: String -> (Int, [Int], [Int])
 parseCard line =
