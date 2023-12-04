@@ -1,10 +1,12 @@
 module Day04
     (
       doPart1,
---      doPart2
+      doPart2
     ) where
 
 import Data.List (intersect)
+import Data.Map (Map, (!))
+import qualified Data.Map.Strict as Map
 import Data.List.Split(splitOneOf)
 
 doPart1 :: [Char] -> Int
@@ -29,3 +31,19 @@ parseCard line =
       numsOnCard = map read $ words $ head $ tail parts
       winningNums = map read $ words $ head $ tail $ tail parts
   in (cardNum, numsOnCard, winningNums)
+
+doPart2 :: [Char] -> Int
+doPart2 input =
+  let cards = map parseCard $ lines input
+      cardNum (c, _, _) = c
+      cardScores = Map.fromAscList $ zip (map cardNum cards) (map cardScore cards)
+      howManyCards = Map.fromAscList $ zip (map cardNum cards) (repeat 1)
+      finalCards = foldl (\acc c -> processCard c cardScores acc) howManyCards (map cardNum cards)
+  in sum finalCards
+
+processCard :: Int -> Map Int Int -> Map Int Int -> Map Int Int
+processCard cardNum cardScores howManyCards =
+  let thisCardScore = cardScores ! cardNum
+      nextN = map (+ cardNum) (take thisCardScore [1..]) -- haha could be simpler
+      howManyOfThisCard = howManyCards ! cardNum
+  in foldl (flip (Map.adjust (+ howManyOfThisCard))) howManyCards nextN
