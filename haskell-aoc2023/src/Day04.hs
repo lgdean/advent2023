@@ -36,9 +36,10 @@ doPart2 :: [Char] -> Int
 doPart2 input =
   let cards = map parseCard $ lines input
       cardNum (c, _, _) = c
-      cardScores = Map.fromAscList $ zip (map cardNum cards) (map cardScore cards)
-      howManyCards = Map.fromAscList $ zip (map cardNum cards) (repeat 1)
-      finalCards = foldl (\acc c -> processCard c cardScores acc) howManyCards (map cardNum cards)
+      allCardNums = map cardNum cards
+      cardScores = Map.fromAscList $ zip allCardNums (map cardScore cards)
+      howManyCards = Map.fromAscList $ zip allCardNums (repeat 1)
+      finalCards = foldl (\acc c -> processCard c cardScores acc) howManyCards allCardNums
   in sum finalCards
 
 processCard :: Int -> Map Int Int -> Map Int Int -> Map Int Int
