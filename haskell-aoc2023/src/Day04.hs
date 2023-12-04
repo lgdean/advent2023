@@ -39,11 +39,11 @@ doPart2 input =
       allCardNums = map cardNum cards
       cardScores = Map.fromAscList $ zip allCardNums (map cardScore cards)
       howManyCards = Map.fromAscList $ zip allCardNums (repeat 1)
-      finalCards = foldl (\acc c -> processCard c cardScores acc) howManyCards allCardNums
+      finalCards = foldl (processCard cardScores) howManyCards allCardNums
   in sum finalCards
 
-processCard :: Int -> Map Int Int -> Map Int Int -> Map Int Int
-processCard cardNum cardScores howManyCards =
+processCard :: Map Int Int -> Map Int Int -> Int -> Map Int Int
+processCard cardScores howManyCards cardNum =
   let thisCardScore = cardScores ! cardNum
       nextN = take thisCardScore [cardNum+1..]
       howManyOfThisCard = howManyCards ! cardNum
