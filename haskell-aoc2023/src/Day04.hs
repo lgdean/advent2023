@@ -45,6 +45,6 @@ doPart2 input =
 processCard :: Int -> Map Int Int -> Map Int Int -> Map Int Int
 processCard cardNum cardScores howManyCards =
   let thisCardScore = cardScores ! cardNum
-      nextN = map (+ cardNum) (take thisCardScore [1..]) -- haha could be simpler
+      nextN = take thisCardScore [cardNum+1..]
       howManyOfThisCard = howManyCards ! cardNum
   in foldl (flip (Map.adjust (+ howManyOfThisCard))) howManyCards nextN
