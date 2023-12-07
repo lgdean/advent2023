@@ -6,9 +6,11 @@ module Day07
 
 import Data.List (group, sort, sortBy)
 
-data Card = Num2 | Num3 | Num4 | Num5 | Num6 | Num7 | Num8 | Num9 | T | J | Q | K | A deriving (Enum, Eq, Ord, Show)
+data Card = N2 | N3 | N4 | N5 | N6 | N7 | N8 | N9 | T | J | Q | K | A
+  deriving (Enum, Eq, Ord, Show)
 type Hand = [Card]
-data HandType = HighCard | OnePair | TwoPair | ThreeK | FullHouse | FourK | FiveK deriving (Enum, Eq, Ord, Show)
+data HandType = HighCard | OnePair | TwoPair | ThreeK | FullHouse | FourK | FiveK
+  deriving (Enum, Eq, Ord, Show)
 
 doPart1 :: [Char] -> Int
 doPart1 input =
@@ -37,14 +39,14 @@ parseLine line =
   in (hand, bid)
 
 parseCard :: Char -> Card
-parseCard '2' = Num2
-parseCard '3' = Num3
-parseCard '4' = Num4
-parseCard '5' = Num5
-parseCard '6' = Num6
-parseCard '7' = Num7
-parseCard '8' = Num8
-parseCard '9' = Num9
+parseCard '2' = N2
+parseCard '3' = N3
+parseCard '4' = N4
+parseCard '5' = N5
+parseCard '6' = N6
+parseCard '7' = N7
+parseCard '8' = N8
+parseCard '9' = N9
 parseCard 'T' = T
 parseCard 'J' = J
 parseCard 'Q' = Q
