@@ -4,7 +4,6 @@ module Day08
 --      doPart2
     ) where
 
-import Data.Char (isAlpha)
 import Data.List.Split(splitOn)
 import Data.Map (Map, (!))
 import qualified Data.Map.Strict as Map
@@ -31,4 +30,5 @@ parseNode line =
   let parts = splitOn " = " line
       src = head parts
       (leftDest:rightDest:_) = splitOn "," (parts !! 1)
-  in (src, (filter isAlpha leftDest, filter isAlpha rightDest))
+      nodeName = filter (`notElem` " ()")
+  in (src, (nodeName leftDest, nodeName rightDest))
