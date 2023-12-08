@@ -16,8 +16,12 @@ doPart1 input =
       directions = cycle $ head allLines
       nodes = map parseNode $ drop 2 allLines
       nodeMap = Map.fromList nodes
-      infinitePath = scanl (goDir nodeMap) "AAA" directions :: [String]
-  in length $ takeWhile ("ZZZ" /=) infinitePath
+  in findLengthOfGivenPath directions nodeMap "AAA" "ZZZ"
+
+findLengthOfGivenPath :: String -> NodeMap -> String -> String -> Int
+findLengthOfGivenPath directions nodeMap src dest =
+  let infinitePath = scanl (goDir nodeMap) src directions :: [String]
+  in length $ takeWhile (dest /=) infinitePath
 
 goDir :: NodeMap -> String -> Char -> String
 goDir nodeMap src dir =
