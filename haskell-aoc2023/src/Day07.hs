@@ -64,32 +64,6 @@ doPart2 input =
       results = zipWith (\rank (_,_,bid) -> rank*bid) [1..] bestHandsLast
   in sum results
 
--- there is surely a way to combine some of these functions with less boilerplate
-compareForPart2 :: (Hand, Int) -> (Hand, Int) -> Ordering
-compareForPart2 (h1, _bid1) (h2, _bid2) =
-  compareHandsForPart2 h1 h2
-
-compareHandsForPart2 :: Hand -> Hand -> Ordering
-compareHandsForPart2 h1 h2 =
-  case compare (part2HandType h1) (part2HandType h2) of
-    EQ -> compareSameTypeHandsForPart2 h1 h2
-    _  -> compare (part2HandType h1) (part2HandType h2)
-
-compareSameTypeHandsForPart2 :: Hand -> Hand -> Ordering
-compareSameTypeHandsForPart2 [] [] = EQ
-compareSameTypeHandsForPart2 (x:xs) (y:ys) =
-  case compareCardsForPart2 x y of
-    EQ -> compareSameTypeHandsForPart2 xs ys
-    LT -> LT
-    GT -> GT
-compareSameTypeHandsForPart2 _ _ = error "tried to compare hands of different size"
-
-compareCardsForPart2 :: Card -> Card -> Ordering
-compareCardsForPart2 J J = EQ
-compareCardsForPart2 J _ = LT
-compareCardsForPart2 _ J = GT
-compareCardsForPart2 c1 c2 = compare c1 c2
-
 -- not pretty, but highly effective at solving this part of the puzzle
 part2HandType :: Hand -> HandType
 part2HandType hand | Joker `notElem` hand = handType hand -- use logic from part 1
