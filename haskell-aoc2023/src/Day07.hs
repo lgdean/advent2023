@@ -6,7 +6,7 @@ module Day07
 
 import Data.List (group, sort, sortBy)
 
-data Card = N2 | N3 | N4 | N5 | N6 | N7 | N8 | N9 | T | J | Q | K | A
+data Card = Joker | N2 | N3 | N4 | N5 | N6 | N7 | N8 | N9 | T | J | Q | K | A
   deriving (Enum, Eq, Ord, Show)
 type Hand = [Card]
 data HandType = HighCard | OnePair | TwoPair | ThreeK | FullHouse | FourK | FiveK
@@ -56,7 +56,8 @@ parseCard  c  = error ("unknown card: " ++ [c])
 
 doPart2 :: [Char] -> Int
 doPart2 input =
-  let rows = map parseLine $ lines input
+  let part1Rows = map parseLine $ lines input
+      rows = map (\(hand, bid) -> (replace J Joker hand, bid)) part1Rows
       --sortableHand (hand, bid) = (part2HandType hand, hand, bid)
       bestHandsLast = sortBy compareForPart2 rows
       results = zipWith (\rank (_,bid) -> rank*bid) [1..] bestHandsLast
@@ -90,24 +91,24 @@ compareCardsForPart2 c1 c2 = compare c1 c2
 
 -- not pretty, but highly effective at solving this part of the puzzle
 part2HandType :: Hand -> HandType
-part2HandType hand | J `notElem` hand = handType hand -- use logic from part 1
-part2HandType hand | count J hand == 1 =
-  let samesies = group $ sort $ filter (/= J) hand
+part2HandType hand | Joker `notElem` hand = handType hand -- use logic from part 1
+part2HandType hand | count Joker hand == 1 =
+  let samesies = group $ sort $ filter (/= Joker) hand
   in case length samesies of
     1 -> FiveK
     2 -> if any ((==3) . length) samesies then FourK else FullHouse -- opposite of Part 1!
     3 -> ThreeK
     4 -> OnePair
     _ -> error "should not reach"
-part2HandType hand | count J hand == 2 =
-  let samesies = group $ sort $ filter (/= J) hand
+part2HandType hand | count Joker hand == 2 =
+  let samesies = group $ sort $ filter (/= Joker) hand
   in case length samesies of
     1 -> FiveK
     2 -> FourK
     3 -> ThreeK
     _ -> error "should not reach"
-part2HandType hand | count J hand == 3 =
-  let samesies = group $ sort $ filter (/= J) hand
+part2HandType hand | count Joker hand == 3 =
+  let samesies = group $ sort $ filter (/= Joker) hand
   in case length samesies of
     1 -> FiveK
     2 -> FourK
@@ -116,3 +117,6 @@ part2HandType _ = FiveK
 
 count :: Eq a => a -> [a] -> Int
 count x xs = length $ filter (== x) xs
+
+replace :: Eq a => a -> a -> [a] -> [a]
+replace x y = map (\z -> if x == z then y else z)
