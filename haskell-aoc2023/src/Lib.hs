@@ -6,6 +6,8 @@ module Lib
     , fixedPoint
     , bin2Int
     , divisibleBy
+    , count
+    , replace
     ) where
 
 import Data.Char(digitToInt)
@@ -39,3 +41,9 @@ bin2Int str = foldl (\acc n -> acc*2+n) 0 (map digitToInt str)
 
 divisibleBy :: Integral a => a -> a -> Bool
 divisibleBy candidate other = candidate `mod` other == 0
+
+count :: Eq a => a -> [a] -> Int
+count x xs = length $ filter (== x) xs
+
+replace :: Eq a => a -> a -> [a] -> [a]
+replace x y = map (\z -> if x == z then y else z)

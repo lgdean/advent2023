@@ -4,6 +4,8 @@ module Day07
       doPart2
     ) where
 
+import Lib (count, replace)
+
 import Data.List (group, sort)
 
 data Card = Joker | N2 | N3 | N4 | N5 | N6 | N7 | N8 | N9 | T | J | Q | K | A
@@ -89,9 +91,3 @@ part2HandType hand | count Joker hand == 3 =
     2 -> FourK
     _ -> error "should not reach"
 part2HandType _ = FiveK
-
-count :: Eq a => a -> [a] -> Int
-count x xs = length $ filter (== x) xs
-
-replace :: Eq a => a -> a -> [a] -> [a]
-replace x y = map (\z -> if x == z then y else z)
