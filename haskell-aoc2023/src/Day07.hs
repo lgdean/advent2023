@@ -4,7 +4,7 @@ module Day07
       doPart2
     ) where
 
-import Data.List (group, sort, sortBy)
+import Data.List (group, sort)
 
 data Card = Joker | N2 | N3 | N4 | N5 | N6 | N7 | N8 | N9 | T | J | Q | K | A
   deriving (Enum, Eq, Ord, Show)
@@ -58,9 +58,10 @@ doPart2 :: [Char] -> Int
 doPart2 input =
   let part1Rows = map parseLine $ lines input
       rows = map (\(hand, bid) -> (replace J Joker hand, bid)) part1Rows
-      --sortableHand (hand, bid) = (part2HandType hand, hand, bid)
-      bestHandsLast = sortBy compareForPart2 rows
-      results = zipWith (\rank (_,bid) -> rank*bid) [1..] bestHandsLast
+      sortableHand (hand, bid) = (part2HandType hand, hand, bid)
+      sortableHands = map sortableHand rows :: [(HandType, Hand, Int)]
+      bestHandsLast = sort sortableHands
+      results = zipWith (\rank (_,_,bid) -> rank*bid) [1..] bestHandsLast
   in sum results
 
 -- there is surely a way to combine some of these functions with less boilerplate
