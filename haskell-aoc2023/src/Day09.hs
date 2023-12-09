@@ -19,7 +19,7 @@ doPart1 input =
 predictNext :: [Int] -> Int
 predictNext history =
   let rows = allRowsDownFrom history
-  in sum $ map last rows
+  in foldr ((+) . last) 0 rows
 
 doPart2 :: [Char] -> Int
 doPart2 input =
