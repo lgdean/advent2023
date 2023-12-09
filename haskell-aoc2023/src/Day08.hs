@@ -34,7 +34,8 @@ parseNode :: String -> (String, (String, String))
 parseNode line =
   let parts = splitOn " = " line
       src = head parts
-      (leftDest:rightDest:_) = splitOn "," (parts !! 1)
+      destParts = splitOn "," (parts !! 1)
+      (leftDest,rightDest) = (head destParts, last destParts)
       nodeName = filter (`notElem` " ()")
   in (src, (nodeName leftDest, nodeName rightDest))
 

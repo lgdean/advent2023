@@ -23,12 +23,13 @@ doPart2 :: [Char] -> Int
 doPart2 input =
   let allGames = map parseLine $ lines input
       minimalSet game = foldl (\(a,b,c) (x,y,z) -> (max a x, max b y, max c z)) (0,0,0) $ snd game
-  in sum $ map (\(x,y,z) -> x*y*z) $ map minimalSet allGames
+  in sum $ map ((\(x,y,z) -> x*y*z) . minimalSet) allGames
 
 -- use order R,G,B
 parseLine :: String -> (Int, [(Int, Int, Int)])
 parseLine line =
-  let [header, rest] = splitOn ":" line
+  let parts = splitOn ":" line
+      (header, rest) = (head parts, last parts)
       gameId = read $ head $ tail $ words header
       handfuls = splitOn ";" rest
   in (gameId, map parseHandful handfuls)
