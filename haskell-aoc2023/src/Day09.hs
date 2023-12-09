@@ -16,6 +16,18 @@ predictNext history =
   let rows = allRowsDownFrom history
   in sum $ map last rows
 
+doPart2 :: [Char] -> Int
+doPart2 input =
+  let allLines = lines input
+      allHistories = map (map read . words) allLines :: [[Int]]
+      predictions = map predictPrior allHistories
+  in sum predictions
+
+predictPrior :: [Int] -> Int
+predictPrior history =
+  let rows = allRowsDownFrom history
+  in foldr ((-) . head) 0 rows
+
 allRowsDownFrom :: [Int] -> [[Int]]
 allRowsDownFrom row =
   let nextRow = nextRowDownFrom row
@@ -28,15 +40,3 @@ nextRowDownFrom :: [Int] -> [Int]
 nextRowDownFrom [] = error "did not consider this case"
 nextRowDownFrom [_] = []
 nextRowDownFrom (x:y:rest) = (y-x) : nextRowDownFrom (y:rest)
-
-doPart2 :: [Char] -> Int
-doPart2 input =
-  let allLines = lines input
-      allHistories = map (map read . words) allLines :: [[Int]]
-      predictions = map predictPrior allHistories
-  in sum predictions
-
-predictPrior :: [Int] -> Int
-predictPrior history =
-  let rows = allRowsDownFrom history
-  in foldr ((-) . head) 0 rows
