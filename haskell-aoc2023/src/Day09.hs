@@ -11,7 +11,6 @@ doPart1 input =
       predictions = map predictNext allHistories
   in sum predictions
 
--- not sure why we're doing this odd algorithm, but let's go for it
 predictNext :: [Int] -> Int
 predictNext history =
   let rows = allRowsDownFrom history
