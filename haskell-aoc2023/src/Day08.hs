@@ -1,9 +1,10 @@
 module Day08
     (
       doPart1,
---      doPart2
+      doPart2
     ) where
 
+import Data.List(findIndices)
 import Data.List.Split(splitOn)
 import Data.Map (Map, (!))
 import qualified Data.Map.Strict as Map
@@ -36,3 +37,23 @@ parseNode line =
       (leftDest:rightDest:_) = splitOn "," (parts !! 1)
       nodeName = filter (`notElem` " ()")
   in (src, (nodeName leftDest, nodeName rightDest))
+
+doPart2 :: [Char] -> Int
+doPart2 input =
+  let allLines = lines input
+      directions = cycle $ head allLines
+      nodes = map parseNode $ drop 2 allLines
+      nodeMap = Map.fromList nodes
+      endsWith x name = x == last name
+      startNodes = filter (endsWith 'A') $ Map.keys nodeMap
+      goodLengthsFrom startX = findLengthsOfGivenPaths directions nodeMap startX (endsWith 'Z')
+      allGoodLengths = map goodLengthsFrom startNodes :: [[Int]]
+      firstOfEach = map head allGoodLengths :: [Int]
+      lcmYolo = foldl lcm 1 firstOfEach
+      -- I didn't really expect that to work, but it did on this particular puzzle/data.
+  in lcmYolo
+
+findLengthsOfGivenPaths :: String -> NodeMap -> String -> (String -> Bool) -> [Int]
+findLengthsOfGivenPaths directions nodeMap src isDest =
+  let infinitePath = scanl (goDir nodeMap) src directions :: [String]
+  in findIndices isDest infinitePath
