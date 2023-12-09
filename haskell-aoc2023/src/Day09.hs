@@ -1,7 +1,7 @@
 module Day09
     (
       doPart1,
---      doPart2
+      doPart2
     ) where
 
 doPart1 :: [Char] -> Int
@@ -29,3 +29,15 @@ nextRowDownFrom :: [Int] -> [Int]
 nextRowDownFrom [] = error "did not consider this case"
 nextRowDownFrom [_] = []
 nextRowDownFrom (x:y:rest) = (y-x) : nextRowDownFrom (y:rest)
+
+doPart2 :: [Char] -> Int
+doPart2 input =
+  let allLines = lines input
+      allHistories = map (map read . words) allLines :: [[Int]]
+      predictions = map predictPrior allHistories
+  in sum predictions
+
+predictPrior :: [Int] -> Int
+predictPrior history =
+  let rows = allRowsDownFrom history
+  in foldr (-) 0 $ map head rows
