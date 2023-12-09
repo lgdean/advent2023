@@ -40,4 +40,4 @@ doPart2 input =
 predictPrior :: [Int] -> Int
 predictPrior history =
   let rows = allRowsDownFrom history
-  in foldr (-) 0 $ map head rows
+  in foldr ((-) . head) 0 rows
