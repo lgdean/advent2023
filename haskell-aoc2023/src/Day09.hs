@@ -4,10 +4,15 @@ module Day09
       doPart2
     ) where
 
-doPart1 :: [Char] -> Int
-doPart1 input =
+readHistories :: [Char] -> [[Int]]
+readHistories input =
   let allLines = lines input
       allHistories = map (map read . words) allLines :: [[Int]]
+  in allHistories
+
+doPart1 :: [Char] -> Int
+doPart1 input =
+  let allHistories = readHistories input
       predictions = map predictNext allHistories
   in sum predictions
 
@@ -18,8 +23,7 @@ predictNext history =
 
 doPart2 :: [Char] -> Int
 doPart2 input =
-  let allLines = lines input
-      allHistories = map (map read . words) allLines :: [[Int]]
+  let allHistories = readHistories input
       predictions = map predictPrior allHistories
   in sum predictions
 
