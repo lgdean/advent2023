@@ -34,11 +34,13 @@ predictPrior history =
 
 allRowsDownFrom :: [Int] -> [[Int]]
 allRowsDownFrom row =
-  let nextRow = nextRowDownFrom row
-      stopping = all (== 0) nextRow
-  in if stopping
-     then [row, nextRow]
-     else row : allRowsDownFrom nextRow
+  takeUntil (all (==0)) $ iterate nextRowDownFrom row
 
 nextRowDownFrom :: [Int] -> [Int]
 nextRowDownFrom xs = zipWith (-) (tail xs) xs
+
+takeUntil :: (a -> Bool) -> [a] -> [a]
+takeUntil _ []          = []
+takeUntil p (x:xs)
+            | p x       = [x]
+            | otherwise = x : takeUntil p xs
