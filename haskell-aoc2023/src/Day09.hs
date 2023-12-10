@@ -41,6 +41,4 @@ allRowsDownFrom row =
      else row : allRowsDownFrom nextRow
 
 nextRowDownFrom :: [Int] -> [Int]
-nextRowDownFrom [] = error "did not consider this case"
-nextRowDownFrom [_] = []
-nextRowDownFrom (x:y:rest) = (y-x) : nextRowDownFrom (y:rest)
+nextRowDownFrom xs = zipWith (-) (tail xs) xs
