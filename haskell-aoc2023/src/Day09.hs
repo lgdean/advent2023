@@ -4,6 +4,8 @@ module Day09
       doPart2
     ) where
 
+import Lib (takeUntil)
+
 readHistories :: [Char] -> [[Int]]
 readHistories input =
   let allLines = lines input
@@ -38,9 +40,3 @@ allRowsDownFrom row =
 
 nextRowDownFrom :: [Int] -> [Int]
 nextRowDownFrom xs = zipWith (-) (tail xs) xs
-
-takeUntil :: (a -> Bool) -> [a] -> [a]
-takeUntil _ []          = []
-takeUntil p (x:xs)
-            | p x       = [x]
-            | otherwise = x : takeUntil p xs

@@ -8,6 +8,7 @@ module Lib
     , divisibleBy
     , count
     , replace
+    , takeUntil
     ) where
 
 import Data.Char(digitToInt)
@@ -47,3 +48,9 @@ count x xs = length $ filter (== x) xs
 
 replace :: Eq a => a -> a -> [a] -> [a]
 replace x y = map (\z -> if x == z then y else z)
+
+takeUntil :: (a -> Bool) -> [a] -> [a]
+takeUntil _ []          = []
+takeUntil p (x:xs)
+            | p x       = [x]
+            | otherwise = x : takeUntil p xs
