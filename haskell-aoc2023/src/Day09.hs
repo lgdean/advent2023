@@ -36,7 +36,5 @@ predictPrior history =
 
 allRowsDownFrom :: [Int] -> [[Int]]
 allRowsDownFrom row =
-  takeUntil (all (==0)) $ iterate nextRowDownFrom row
-
-nextRowDownFrom :: [Int] -> [Int]
-nextRowDownFrom xs = zipWith (-) (tail xs) xs
+  let nextRowDownFrom xs = zipWith (-) (tail xs) xs
+  in takeUntil (all (==0)) $ iterate nextRowDownFrom row
