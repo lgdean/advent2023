@@ -37,14 +37,14 @@ manhattanDistance (x1, y1) (x2, y2) =
 doPart2 :: Int -> [Char] -> Int
 doPart2 n input =
   let rows = lines input
-      origGrid = parseGrid input
-      origGalaxyCoords = Map.keys $ Map.filter (== '#') origGrid
       emptyRows = findIndices (all (== '.')) rows
       emptyCols = findIndices (all (== '.')) $ transpose rows
       -- not the most efficient, but it doesn't need to be
       newCoord (x, y) =
         (x + (n-1) * length (takeWhile (<x) emptyCols),
          y + (n-1) * length (takeWhile (<y) emptyRows))
+      origGrid = parseGrid input
+      origGalaxyCoords = Map.keys $ Map.filter (== '#') origGrid
       galaxyCoords = map newCoord origGalaxyCoords
       galaxyPairs = pairsFrom galaxyCoords
       distances = map (uncurry manhattanDistance) galaxyPairs
