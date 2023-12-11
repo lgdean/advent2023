@@ -16,7 +16,7 @@ doPart1 = doPart2 2
 pairsFrom :: [a] -> [(a, a)]
 pairsFrom [] = []
 pairsFrom [_] = []
-pairsFrom (x:xs) = map (\y -> (x,y)) xs ++ pairsFrom xs
+pairsFrom (x:xs) = zip (repeat x) xs ++ pairsFrom xs
 
 
 -- copied once again!
