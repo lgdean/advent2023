@@ -18,24 +18,24 @@ readHistories input =
 doPart1 :: [Char] -> Int
 doPart1 input =
   let allHistories = readHistories input
-      predictions = map predictNext allHistories
+      expandedHistories = map allRowsDownFrom allHistories
+      predictions = map predictNext expandedHistories
   in sum predictions
 
-predictNext :: History -> Int
+predictNext :: ExpandedHistory -> Int
 predictNext history =
-  let rows = allRowsDownFrom history
-  in foldr ((+) . last) 0 rows
+  foldr ((+) . last) 0 history
 
 doPart2 :: [Char] -> Int
 doPart2 input =
   let allHistories = readHistories input
-      predictions = map predictPrior allHistories
+      expandedHistories = map allRowsDownFrom allHistories
+      predictions = map predictPrior expandedHistories
   in sum predictions
 
-predictPrior :: History -> Int
+predictPrior :: ExpandedHistory -> Int
 predictPrior history =
-  let rows = allRowsDownFrom history
-  in foldr ((-) . head) 0 rows
+  foldr ((-) . head) 0 history
 
 allRowsDownFrom :: History -> ExpandedHistory
 allRowsDownFrom row =
