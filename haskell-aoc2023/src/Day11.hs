@@ -11,28 +11,15 @@ import qualified Data.Map.Strict as Map
 type Coord = (Int, Int)
 
 doPart1 :: [Char] -> Int
-doPart1 input =
-  let rows = lines input
-      expandedRows = doubleAsNeeded rows
-      cols = transpose expandedRows
-      expandedCols = doubleAsNeeded cols
-      newGridInput = transpose expandedCols
-      grid = Map.unions $ zipWith parseRow [0..] newGridInput
-      galaxyCoords = Map.keys $ Map.filter (== '#') grid
-      galaxyPairs = pairsFrom galaxyCoords
-      distances = map (uncurry manhattanDistance) galaxyPairs
-  in sum distances
+doPart1 = doPart2 2
 
 pairsFrom :: [a] -> [(a, a)]
 pairsFrom [] = []
 pairsFrom [_] = []
 pairsFrom (x:xs) = map (\y -> (x,y)) xs ++ pairsFrom xs
 
-doubleAsNeeded :: [[Char]] -> [[Char]]
-doubleAsNeeded = expandAsNeeded 2
 
-
--- copied once again! then not quite used as such
+-- copied once again!
 parseGrid :: String -> Map (Int, Int) Char
 parseGrid input =
   let rows = lines input
@@ -62,8 +49,3 @@ doPart2 n input =
       galaxyPairs = pairsFrom galaxyCoords
       distances = map (uncurry manhattanDistance) galaxyPairs
   in sum distances
-
-expandAsNeeded :: Int -> [[Char]] -> [[Char]]
-expandAsNeeded _ [] = []
-expandAsNeeded n (xs:rest) =
-  (if all (== '.') xs then replicate n xs else [xs]) ++ expandAsNeeded n rest
