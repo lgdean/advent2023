@@ -6,10 +6,13 @@ module Day09
 
 import Lib (takeUntil)
 
-readHistories :: [Char] -> [[Int]]
+type History = [Int]
+type ExpandedHistory = [[Int]]
+
+readHistories :: [Char] -> [History]
 readHistories input =
   let allLines = lines input
-      allHistories = map (map read . words) allLines :: [[Int]]
+      allHistories = map (map read . words) allLines :: [History]
   in allHistories
 
 doPart1 :: [Char] -> Int
@@ -18,7 +21,7 @@ doPart1 input =
       predictions = map predictNext allHistories
   in sum predictions
 
-predictNext :: [Int] -> Int
+predictNext :: History -> Int
 predictNext history =
   let rows = allRowsDownFrom history
   in foldr ((+) . last) 0 rows
@@ -29,12 +32,12 @@ doPart2 input =
       predictions = map predictPrior allHistories
   in sum predictions
 
-predictPrior :: [Int] -> Int
+predictPrior :: History -> Int
 predictPrior history =
   let rows = allRowsDownFrom history
   in foldr ((-) . head) 0 rows
 
-allRowsDownFrom :: [Int] -> [[Int]]
+allRowsDownFrom :: History -> ExpandedHistory
 allRowsDownFrom row =
   let nextRowDownFrom xs = zipWith (-) (tail xs) xs
   in takeUntil (all (==0)) $ iterate nextRowDownFrom row
