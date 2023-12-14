@@ -3,12 +3,12 @@ module Lib
     , parseChunks
     , strip
     , mapSnd
-    , fixedPoint
     , bin2Int
     , divisibleBy
     , count
     , replace
     , takeUntil
+    , fixedPoint
     , applyNTimesDetectingCycle
     ) where
 
@@ -34,11 +34,6 @@ strip  = T.unpack . T.strip . T.pack
 mapSnd :: (b -> c) -> [(a,b)] -> [(a,c)]
 mapSnd f = map (\(x,y) -> (x, f y))
 
-fixedPoint :: Eq a => (a -> a) -> a -> a
-fixedPoint f initState =
-  let nextState = f initState
-  in if initState == nextState then nextState else fixedPoint f nextState
-
 bin2Int :: String -> Int
 bin2Int str = foldl (\acc n -> acc*2+n) 0 (map digitToInt str)
 
@@ -56,6 +51,11 @@ takeUntil _ []          = []
 takeUntil p (x:xs)
             | p x       = [x]
             | otherwise = x : takeUntil p xs
+
+fixedPoint :: Eq a => (a -> a) -> a -> a
+fixedPoint f initState =
+  let nextState = f initState
+  in if initState == nextState then nextState else fixedPoint f nextState
 
 applyNTimesDetectingCycle :: (Eq a) => Int -> (a -> a) -> a -> a
 applyNTimesDetectingCycle = applyNTimesDetectingCycle' []
