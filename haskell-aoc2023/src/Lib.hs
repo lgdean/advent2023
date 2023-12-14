@@ -60,6 +60,7 @@ fixedPoint f initState =
 applyNTimesDetectingCycle :: (Eq a) => Int -> (a -> a) -> a -> a
 applyNTimesDetectingCycle = applyNTimesDetectingCycle' []
 
+-- could perhaps be made faster with use of Set
 applyNTimesDetectingCycle' :: (Eq a) => [a] -> Int -> (a -> a) -> a -> a
 applyNTimesDetectingCycle'   _   0 _ currState = currState
 applyNTimesDetectingCycle' soFar n f currState =
