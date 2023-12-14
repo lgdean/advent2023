@@ -9,9 +9,11 @@ module Lib
     , count
     , replace
     , takeUntil
+    , applyNTimesDetectingCycle
     ) where
 
 import Data.Char(digitToInt)
+import Data.List (elemIndex)
 import Data.List.Split (splitOn)
 import qualified Data.Text as T
 
@@ -54,3 +56,16 @@ takeUntil _ []          = []
 takeUntil p (x:xs)
             | p x       = [x]
             | otherwise = x : takeUntil p xs
+
+applyNTimesDetectingCycle :: (Eq a) => Int -> (a -> a) -> a -> a
+applyNTimesDetectingCycle = applyNTimesDetectingCycle' []
+
+applyNTimesDetectingCycle' :: (Eq a) => [a] -> Int -> (a -> a) -> a -> a
+applyNTimesDetectingCycle'   _   0 _ currState = currState
+applyNTimesDetectingCycle' soFar n f currState =
+  let beenSeen = elemIndex currState soFar
+      nextState = f currState
+      nToGo = n-1
+  in case beenSeen of
+    Nothing -> applyNTimesDetectingCycle' (currState:soFar) nToGo f nextState
+    Just x -> (currState:soFar) !! (x - (nToGo `mod` (x+1)))

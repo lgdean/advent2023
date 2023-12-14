@@ -6,7 +6,9 @@ module Day14
       doPart2
     ) where
 
-import Data.List (elemIndex, transpose)
+import Data.List (transpose)
+
+import Lib (applyNTimesDetectingCycle)
 
 doPart1 :: [Char] -> Int
 doPart1 input =
@@ -47,16 +49,3 @@ tiltAllTowardBegin = map (tiltTowardBegin [])
 
 tiltAllTowardEnd :: [[Char]] -> [[Char]]
 tiltAllTowardEnd = map (reverse . tiltTowardBegin [] . reverse)
-
-applyNTimesDetectingCycle :: (Eq a) => Int -> (a -> a) -> a -> a
-applyNTimesDetectingCycle = applyNTimesDetectingCycle' []
-
-applyNTimesDetectingCycle' :: (Eq a) => [a] -> Int -> (a -> a) -> a -> a
-applyNTimesDetectingCycle'   _   0 _ currState = currState
-applyNTimesDetectingCycle' soFar n f currState =
-  let beenSeen = elemIndex currState soFar
-      nextState = f currState
-      nToGo = n-1
-  in case beenSeen of
-    Nothing -> applyNTimesDetectingCycle' (currState:soFar) nToGo f nextState
-    Just x -> (currState:soFar) !! (x - (nToGo `mod` (x+1)))
