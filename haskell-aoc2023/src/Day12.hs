@@ -8,6 +8,9 @@ module Day12
 import Data.List (group)
 import Data.List.Split (splitOn)
 
+-- or use two states and Nothing?
+data SpringState = Operational | Broken | Unknown deriving (Eq, Show)
+
 doPart1 :: [Char] -> Int
 doPart1 input =
   sum $ map howManyWays $ lines input
@@ -20,13 +23,19 @@ howManyWays row =
   in length $ arrangementsFrom pattern brokenGroups
 
 -- first, try brute force
-arrangementsFrom :: [Char] -> [Int] -> [[Char]]
+arrangementsFrom :: [Char] -> [Int] -> [[SpringState]]
 arrangementsFrom pattern brokenGroupLengths =
-  let allMatchingPattern = sequence (map possibleStatesFor pattern)
-      rightOnesBroken poss = brokenGroupLengths == (map length $ filter ((=='#') . head) $ group poss)
+  let allMatchingPattern = sequence (map (statesFor . parseState) pattern)
+      rightOnesBroken poss = brokenGroupLengths == (map length $ filter ((==Broken) . head) $ group poss)
   in filter rightOnesBroken allMatchingPattern
 
-possibleStatesFor :: Char -> [Char]
-possibleStatesFor '#' = ['#']
-possibleStatesFor '.' = ['.']
-possibleStatesFor  _  = ['#','.']
+statesFor :: SpringState -> [SpringState]
+statesFor Broken = [Broken]
+statesFor Operational = [Operational]
+statesFor  _  = [Broken, Operational]
+
+parseState :: Char -> SpringState
+parseState '#' = Broken
+parseState '.' = Operational
+parseState '?' = Unknown
+parseState  x  = error (x : " is not a valid state")
