@@ -62,4 +62,4 @@ findResults' soFar n f currState =
   in case beenSeen of
     Nothing -> findResults' (currState:soFar) nToGo f nextState
     Just 0 -> trace ("fixed point with " ++ show n ++ " to go?" ++ show currState) currState
-    Just x -> findResults' (currState:soFar) (nToGo `mod` (x+1)) f nextState
+    Just x -> (currState:soFar) !! (x - (nToGo `mod` (x+1)))
