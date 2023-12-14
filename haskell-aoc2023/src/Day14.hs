@@ -6,7 +6,7 @@ module Day14
       doPart2
     ) where
 
-import Data.List (transpose)
+import Data.List (elemIndex, transpose)
 
 import Debug.Trace (trace)
 
@@ -34,10 +34,7 @@ loadOnNorth rows =
 doPart2 :: [Char] -> Int
 doPart2 input =
   let rows = lines input
-      intermediateResults = iterate tiltCycle rows
-      intermediateCounts = map loadOnNorth intermediateResults
-      eventualResult = intermediateResults !! 1000000000
-  in 0
+  in loadOnNorth $ findResults 1000000000 tiltCycle rows
 
 tiltCycle :: [[Char]] -> [[Char]]
 tiltCycle rows =
@@ -52,3 +49,17 @@ tiltAllTowardBegin = map (tiltTowardBegin [])
 
 tiltAllTowardEnd :: [[Char]] -> [[Char]]
 tiltAllTowardEnd = map (reverse . tiltTowardBegin [] . reverse)
+
+findResults :: (Eq a, Show a) => Int -> (a -> a) -> a -> a
+findResults = findResults' []
+
+findResults' :: (Eq a, Show a) => [a] -> Int -> (a -> a) -> a -> a
+findResults'   _   0 _ currState = currState
+findResults' soFar n f currState =
+  let beenSeen = elemIndex currState soFar
+      nextState = f currState
+      nToGo = n-1
+  in case beenSeen of
+    Nothing -> findResults' (currState:soFar) nToGo f nextState
+    Just 0 -> trace ("fixed point with " ++ show n ++ " to go?" ++ show currState) currState
+    Just x -> findResults' (currState:soFar) (nToGo `mod` (x+1)) f nextState

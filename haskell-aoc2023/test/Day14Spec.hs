@@ -30,5 +30,8 @@ spec = do
 
     it "can handle given example" $ do
       input <- readFile "inputs/day14-example"
-      --doPart2 input `shouldBe` 64
-      doPart2 input `shouldBe` 0
+      doPart2 input `shouldBe` 64
+
+    it "can solve Part 2" $ do
+      input <- readFile "inputs/day14"
+      doPart2 input `shouldBe` 90928
