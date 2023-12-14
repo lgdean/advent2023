@@ -20,7 +20,7 @@ spec = do
 
     it "can solve Part 1" $ do
       input <- readFile "inputs/day12"
-      doPart1 input `shouldBe` 6827 -- works, but took 28 seconds
+      doPart1 input `shouldBe` 6827 -- still slow, but now under 2 seconds
 
 --  describe "Part 2" $ do
 --    it "can handle given example" $ do

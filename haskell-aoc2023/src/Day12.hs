@@ -5,7 +5,6 @@ module Day12
 --      doPart2
     ) where
 
-import Control.Monad (replicateM)
 import Data.List (group)
 import Data.List.Split (splitOn)
 
@@ -23,11 +22,11 @@ howManyWays row =
 -- first, try brute force
 arrangementsFrom :: [Char] -> [Int] -> [[Char]]
 arrangementsFrom pattern brokenGroupLengths =
-  let allPossible = replicateM (length pattern) ['#','.']
-      allMatchingPattern = filter (couldBe pattern) allPossible
+  let allMatchingPattern = sequence (map possibleStatesFor pattern)
       rightOnesBroken poss = brokenGroupLengths == (map length $ filter ((=='#') . head) $ group poss)
   in filter rightOnesBroken allMatchingPattern
 
-couldBe :: String -> String -> Bool
-couldBe pattern arr =
-  all (\(x, y) -> x == '?' || x == y) $ zip pattern arr
+possibleStatesFor :: Char -> [Char]
+possibleStatesFor '#' = ['#']
+possibleStatesFor '.' = ['.']
+possibleStatesFor  _  = ['#','.']
