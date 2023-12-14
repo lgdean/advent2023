@@ -8,8 +8,6 @@ module Day14
 
 import Data.List (elemIndex, transpose)
 
-import Debug.Trace (trace)
-
 doPart1 :: [Char] -> Int
 doPart1 input =
   let rows = lines input
@@ -50,10 +48,10 @@ tiltAllTowardBegin = map (tiltTowardBegin [])
 tiltAllTowardEnd :: [[Char]] -> [[Char]]
 tiltAllTowardEnd = map (reverse . tiltTowardBegin [] . reverse)
 
-findResults :: (Eq a, Show a) => Int -> (a -> a) -> a -> a
+findResults :: (Eq a) => Int -> (a -> a) -> a -> a
 findResults = findResults' []
 
-findResults' :: (Eq a, Show a) => [a] -> Int -> (a -> a) -> a -> a
+findResults' :: (Eq a) => [a] -> Int -> (a -> a) -> a -> a
 findResults'   _   0 _ currState = currState
 findResults' soFar n f currState =
   let beenSeen = elemIndex currState soFar
@@ -61,5 +59,4 @@ findResults' soFar n f currState =
       nToGo = n-1
   in case beenSeen of
     Nothing -> findResults' (currState:soFar) nToGo f nextState
-    Just 0 -> trace ("fixed point with " ++ show n ++ " to go?" ++ show currState) currState
     Just x -> (currState:soFar) !! (x - (nToGo `mod` (x+1)))
