@@ -32,7 +32,7 @@ loadOnNorth rows =
 doPart2 :: [Char] -> Int
 doPart2 input =
   let rows = lines input
-  in loadOnNorth $ findResults 1000000000 tiltCycle rows
+  in loadOnNorth $ applyNTimesDetectingCycle 1000000000 tiltCycle rows
 
 tiltCycle :: [[Char]] -> [[Char]]
 tiltCycle rows =
@@ -48,15 +48,15 @@ tiltAllTowardBegin = map (tiltTowardBegin [])
 tiltAllTowardEnd :: [[Char]] -> [[Char]]
 tiltAllTowardEnd = map (reverse . tiltTowardBegin [] . reverse)
 
-findResults :: (Eq a) => Int -> (a -> a) -> a -> a
-findResults = findResults' []
+applyNTimesDetectingCycle :: (Eq a) => Int -> (a -> a) -> a -> a
+applyNTimesDetectingCycle = applyNTimesDetectingCycle' []
 
-findResults' :: (Eq a) => [a] -> Int -> (a -> a) -> a -> a
-findResults'   _   0 _ currState = currState
-findResults' soFar n f currState =
+applyNTimesDetectingCycle' :: (Eq a) => [a] -> Int -> (a -> a) -> a -> a
+applyNTimesDetectingCycle'   _   0 _ currState = currState
+applyNTimesDetectingCycle' soFar n f currState =
   let beenSeen = elemIndex currState soFar
       nextState = f currState
       nToGo = n-1
   in case beenSeen of
-    Nothing -> findResults' (currState:soFar) nToGo f nextState
+    Nothing -> applyNTimesDetectingCycle' (currState:soFar) nToGo f nextState
     Just x -> (currState:soFar) !! (x - (nToGo `mod` (x+1)))
