@@ -22,11 +22,11 @@ spec = do
       input <- readFile "inputs/day12"
       doPart1 input `shouldBe` 6827 -- still slow, but now under 2 seconds
 
---  describe "Part 2" $ do
---    it "can handle given example" $ do
---      input <- readFile "inputs/day12-example"
---      doPart2 input `shouldBe` 525152
---
---   it "can solve Part 2" $ do
+  describe "Part 2" $ do
+    it "can handle given example" $ do
+      input <- readFile "inputs/day12-example"
+      doPart2 input `shouldBe` 525152
+
+--    it "can solve Part 2" $ do
 --      input <- readFile "inputs/day12"
 --      doPart2 input `shouldBe` 0
