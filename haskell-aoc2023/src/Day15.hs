@@ -20,15 +20,10 @@ doPart1 :: [Char] -> Int
 doPart1 input =
   let str = strip input
       parts = splitOn "," str
-  in sum $ map (hashFn 0) parts
+  in sum $ map hashFn parts
 
--- yes, this could be a foldl
-hashFn :: Int -> String -> Int
-hashFn currVal [] = currVal
-hashFn currVal (c:rest) =
-  let plusAscii = currVal + ord c
-      nextVal = (plusAscii * 17) `mod` 256
-  in hashFn nextVal rest
+hashFn :: String -> Int
+hashFn = foldl (\currVal c -> ((currVal + ord c) * 17) `mod` 256) 0
 
 doPart2 :: [Char] -> Int
 doPart2 input =
@@ -42,9 +37,9 @@ doPart2 input =
 
 operateOn :: Boxes -> Op -> Boxes
 operateOn boxes (Remove label) =
-  Map.adjust (removeLens label) (hashFn 0 label) boxes
+  Map.adjust (removeLens label) (hashFn label) boxes
 operateOn boxes (Insert lens) =
-  Map.adjust (insertOrReplaceLens lens) (hashFn 0 $ fst lens) boxes
+  Map.adjust (insertOrReplaceLens lens) (hashFn $ fst lens) boxes
 
 removeLens :: String -> [Lens] -> [Lens]
 removeLens label = deleteBy (\(a,_) (c,_) -> a == c) (label, 0)
