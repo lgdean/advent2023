@@ -45,7 +45,7 @@ howManyConsistentWith :: [Int] -> [SpringState] -> Int
 howManyConsistentWith [] pattern = if any (== Broken) pattern then 0 else 1
 howManyConsistentWith (_:_) []   = 0 -- handled separately to satisfy a warning
 howManyConsistentWith brokenRanges pattern
-  | sum brokenRanges > length (filter (/= Operational) pattern) = 0
+  | sum brokenRanges + length brokenRanges - 1 > length pattern = 0
 howManyConsistentWith (n:restRanges) pattern@(Broken:_) =
   let nextN = take n pattern
       couldAllBeBroken = not $ any (== Operational) nextN && length nextN == n
