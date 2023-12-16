@@ -23,4 +23,4 @@ spec = do
 
     it "can solve Part 2" $ do
       input <- readFile "inputs/day16"
-      doPart2 input `shouldBe` 7530 -- 6 seconds, may or may not ever improve it
+      doPart2 input `shouldBe` 7530 -- 5.7 seconds or so, it'll do

@@ -10,6 +10,8 @@ import qualified Data.Map.Strict as Map
 import Data.Set (Set)
 import qualified Data.Set as Set
 
+import Lib (fixedPoint)
+
 type Coord = (Int, Int)
 data Dir = Up | Down | L | R deriving (Eq, Ord)
 type Beam = (Coord, Dir)
@@ -28,10 +30,9 @@ howManyTilesEnergized :: Map Coord Tile -> Beam -> Int
 howManyTilesEnergized gridLayout initBeam =
   let
       firstBeamOrBeams = moveBeam gridLayout initBeam
-      allMoves = iterate (moveBeams gridLayout) (Set.empty, firstBeamOrBeams)
-      allPositions = Set.map fst $ fst (allMoves !! 1000)
-      result = allPositions :: Set Coord
-  in Set.size result
+      (allBeamStates, _) = fixedPoint (moveBeams gridLayout) (Set.empty, firstBeamOrBeams)
+      allPositions = Set.map fst allBeamStates
+  in Set.size allPositions
 
 moveBeams :: TileLayout -> (Set Beam, Set Beam) -> (Set Beam, Set Beam)
 moveBeams layout (seenSoFar, currBeams) =

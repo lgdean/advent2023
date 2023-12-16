@@ -9,6 +9,8 @@ module Lib
     , replace
     , takeUntil
     , fixedPoint
+    , iterateUntilFixedPoint
+    , takeUntilFixedPoint
     , applyNTimesDetectingCycle
     ) where
 
@@ -56,6 +58,18 @@ fixedPoint :: Eq a => (a -> a) -> a -> a
 fixedPoint f initState =
   let nextState = f initState
   in if initState == nextState then nextState else fixedPoint f nextState
+
+iterateUntilFixedPoint :: Eq a => (a -> a) -> a -> [a]
+iterateUntilFixedPoint f initState =
+  let nextState = f initState
+  in initState : (if initState == nextState then [] else iterateUntilFixedPoint f nextState)
+
+takeUntilFixedPoint :: Eq a => [a] -> [a]
+takeUntilFixedPoint [] = []
+takeUntilFixedPoint [x] = [x]
+takeUntilFixedPoint (x:y:rest)
+  | x == y    = [x]
+  | otherwise = x : takeUntilFixedPoint (y:rest)
 
 applyNTimesDetectingCycle :: (Eq a) => Int -> (a -> a) -> a -> a
 applyNTimesDetectingCycle = applyNTimesDetectingCycle' []
