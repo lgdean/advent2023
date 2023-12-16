@@ -22,6 +22,11 @@ doPart1 :: [Char] -> Int
 doPart1 input =
   let gridLayout = Map.map parseTile $ parseGrid input :: TileLayout
       initBeam = ((-1, 0), R)
+  in howManyTilesEnergized gridLayout initBeam
+
+howManyTilesEnergized :: Map Coord Tile -> Beam -> Int
+howManyTilesEnergized gridLayout initBeam =
+  let
       firstBeamOrBeams = moveBeam gridLayout initBeam
       allMoves = iterate (Set.unions . Set.map (moveBeam gridLayout)) firstBeamOrBeams
       allPositions = take 1000 $ map (Set.map fst) allMoves
