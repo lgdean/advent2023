@@ -2,7 +2,7 @@
 module Day16
     (
       doPart1,
---      doPart2
+      doPart2
     ) where
 
 import Data.Map (Map)
@@ -85,3 +85,16 @@ parseTile '\\' = BSMirror
 parseTile '-' = HSplitter
 parseTile '|' = VSplitter
 parseTile  x  = error ("could not parse tile: " ++ [x])
+
+doPart2 :: [Char] -> Int
+doPart2 input =
+  let gridLayout = Map.map parseTile $ parseGrid input :: TileLayout
+      maxX = length $ head $ lines input
+      maxY = length $ lines input
+      initBeams = concat [[((-1, y), R) | y <- [0 .. maxY-1]]
+                         ,[((maxX, y), L) | y <- [0 .. maxY-1]]
+                         ,[((x, -1), Down) | x <- [0 .. maxX-1]]
+                         ,[((x, maxY), Up) | x <- [0 .. maxX-1]]
+                         ]
+      results = map (howManyTilesEnergized gridLayout) initBeams
+  in maximum results
