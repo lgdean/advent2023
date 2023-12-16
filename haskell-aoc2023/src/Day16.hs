@@ -28,11 +28,15 @@ howManyTilesEnergized :: Map Coord Tile -> Beam -> Int
 howManyTilesEnergized gridLayout initBeam =
   let
       firstBeamOrBeams = moveBeam gridLayout initBeam
-      allMoves = iterate (Set.unions . Set.map (moveBeam gridLayout)) firstBeamOrBeams
-      allPositions = take 1000 $ map (Set.map fst) allMoves
-      result = Set.unions allPositions
+      allMoves = iterate (moveBeams gridLayout) (Set.empty, firstBeamOrBeams)
+      allPositions = Set.map fst $ fst (allMoves !! 1000)
+      result = allPositions :: Set Coord
   in Set.size result
 
+moveBeams :: TileLayout -> (Set Beam, Set Beam) -> (Set Beam, Set Beam)
+moveBeams layout (seenSoFar, currBeams) =
+  let nextBeams = Set.unions $ Set.map (moveBeam layout) currBeams
+  in (Set.union seenSoFar currBeams, Set.difference nextBeams seenSoFar)
 
 moveBeam :: TileLayout -> Beam -> Set Beam
 moveBeam layout (pos, dir) =
