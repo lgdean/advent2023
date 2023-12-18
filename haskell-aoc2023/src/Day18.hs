@@ -5,14 +5,11 @@ module Day18
 --      doPart2
     ) where
 
-import Data.List (intercalate, group)
 import Data.List.Extra (groupOn)
 import Data.Map (Map)
 import qualified Data.Map.Strict as Map
 import Data.Set ()
 import qualified Data.Set as Set
-
-import Debug.Trace (trace)
 
 import Lib (count)
 
@@ -49,8 +46,7 @@ digOutInterior initSetup =
       pointsForRow y = map (, y) [minX .. maxX] :: [Coord]
       allCoords = map pointsForRow yRange
       endDugStates = map (map digIfInside) allCoords
-      newApproachString = intercalate "\n" $ map showRow endDugStates
-  in trace newApproachString $ sum $ map (count Trench) endDugStates
+  in sum $ map (count Trench) endDugStates
 
 isVerticalEdge :: TerrainLayout -> [Coord] -> Bool
 isVerticalEdge _ [] = error "an empty list is not an edge, why are you asking?"
@@ -62,18 +58,11 @@ isVerticalEdge layout coords =
       partOfAJog = valueOf (oneEndX, y+1) == valueOf (otherEndX, y-1)
   in partOfAJog
 
-showRow :: [TerrainState] -> String
-showRow ts =
+_showRow :: [TerrainState] -> String
+_showRow ts =
   let showOne Empty = '.'
       showOne Trench = '#'
   in map showOne ts
-
-digOutRow :: [TerrainState] -> [TerrainState]
-digOutRow ts =
-  let chunks = group (Empty:ts) -- always starting outside the trench
-      outsideTrench = cycle [True, False, False, False]
-      digIt stretch outside = if outside then stretch else replicate (length stretch) Trench
-  in concat $ zipWith digIt chunks outsideTrench
 
 digPerPlan :: Coord -> [(Dir, Int)] -> [[Coord]]
 digPerPlan start = scanl (dig . last) [start]
