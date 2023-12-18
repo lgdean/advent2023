@@ -5,6 +5,7 @@ module Lib
     , mapSnd
     , bin2Int
     , divisibleBy
+    , minAndMax
     , count
     , replace
     , takeUntil
@@ -41,6 +42,9 @@ bin2Int str = foldl (\acc n -> acc*2+n) 0 (map digitToInt str)
 
 divisibleBy :: Integral a => a -> a -> Bool
 divisibleBy candidate other = candidate `mod` other == 0
+
+minAndMax :: (Ord a, Foldable t) => t a -> (a, a)
+minAndMax xs = (minimum xs, maximum xs)
 
 count :: Eq a => a -> [a] -> Int
 count x xs = length $ filter (== x) xs

@@ -11,7 +11,7 @@ import qualified Data.Map.Strict as Map
 import Data.Set ()
 import qualified Data.Set as Set
 
-import Lib (count)
+import Lib (count, minAndMax)
 
 type Coord = (Int, Int)
 data Dir = Up | Down | L | R deriving (Eq, Ord)
@@ -95,6 +95,3 @@ parseDir "L" = L
 parseDir "U" = Up
 parseDir "D" = Down
 parseDir  x  = error ("unknown direction: " ++ x)
-
-minAndMax :: (Ord a, Foldable t) => t a -> (a, a)
-minAndMax xs = (minimum xs, maximum xs)
