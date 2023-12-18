@@ -95,3 +95,17 @@ parseDir "L" = L
 parseDir "U" = Up
 parseDir "D" = Down
 parseDir  x  = error ("unknown direction: " ++ x)
+
+parseDir2 :: Char -> Dir
+parseDir2 '0' = R
+parseDir2 '1' = Down
+parseDir2 '2' = L
+parseDir2 '3' = Up
+parseDir2  x  = error ("unknown direction: " ++ [x])
+
+parseForPart2 :: String -> (Dir, Int)
+parseForPart2 line =
+  let (_, _, hexPart) = parseLine line
+      dirChar = last hexPart
+      hexNum = "0x" ++ take 5 (tail hexPart)
+  in (parseDir2 dirChar, read hexNum)
