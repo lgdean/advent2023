@@ -15,3 +15,12 @@ spec = do
     it "can solve Part 1" $ do
       input <- readFile "inputs/day18"
       doPart1 input `shouldBe` 48652
+
+--  describe "Part 2" $ do
+--    it "can handle given example" $ do
+--      input <- readFile "inputs/day18-example"
+--      doPart2 input `shouldBe` 952408144115
+--
+--    it "can solve Part 2" $ do
+--      input <- readFile "inputs/day18"
+--      doPart2 input `shouldBe` 0

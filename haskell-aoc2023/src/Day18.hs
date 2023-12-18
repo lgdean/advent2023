@@ -23,6 +23,11 @@ data DigState = Outside | EnteringTrench | Inside | ExitingTrench deriving (Eq, 
 doPart1 :: [Char] -> Int
 doPart1 input =
   let digPlan = map ((\(x,y,_) -> (x,y)) . parseLine) (lines input)
+  in calculateCapacity digPlan
+
+calculateCapacity :: [(Dir, Int)] -> Int
+calculateCapacity digPlan =
+  let
       origin = (0, 0)
       segments = digPerPlan origin digPlan
       allVisited = origin : concat segments
