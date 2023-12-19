@@ -2,7 +2,7 @@
 module Day18
     (
       doPart1,
---      doPart2
+      doPart2
     ) where
 
 import Data.List.Extra (groupOn)
@@ -109,3 +109,8 @@ parseForPart2 line =
       dirChar = last hexPart
       hexNum = "0x" ++ take 5 (tail hexPart)
   in (parseDir2 dirChar, read hexNum)
+
+doPart2 :: [Char] -> Int
+doPart2 input =
+  let digPlan = map parseForPart2 (lines input)
+  in calculateCapacity digPlan
