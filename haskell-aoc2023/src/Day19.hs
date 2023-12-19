@@ -1,10 +1,11 @@
 module Day19
     (
       doPart1,
---      doPart2
+      doPart2
     ) where
 
 import Data.Char (isAlpha, isDigit)
+import Data.List.Extra (groupOn)
 import Data.List.Split (splitOn)
 import Data.Map (Map)
 import qualified Data.Map.Strict as Map
@@ -90,3 +91,43 @@ parseRating str =
       readVal p = read $ filter isDigit p
       vals = map readVal parts
   in PartRating { x = head vals, m = vals !! 1, a = vals !! 2, s = vals !! 3 }
+
+doPart2 :: [Char] -> Int
+doPart2 input =
+  let allLines = lines input
+      chunks = splitOn [""] allLines
+      workflowLines = head chunks
+      workflowMap = Map.fromList $ map parseWorkflow workflowLines :: Workflows
+      acceptPaths = allAcceptPathsFrom workflowMap "in"
+      acceptableRangeCombos = map howManySatisfy acceptPaths
+  in sum acceptableRangeCombos
+
+-- input has 570 workflows; this might be fine?
+allAcceptPathsFrom :: Workflows -> String -> [[(WorkflowRule, Bool)]]
+allAcceptPathsFrom _ "A" = [[]]
+allAcceptPathsFrom _ "R" = []
+allAcceptPathsFrom workflows name =
+  let workflow = workflows Map.! name
+      possibleStates = take (length workflow) $ map (\n -> replicate n False ++ [True]) [0..] :: [[Bool]]
+      combos = map (zip workflow) possibleStates :: [[(WorkflowRule, Bool)]]
+      ruleResult (_,_,_,nextState) = nextState
+      pathsFrom combo = map (combo ++) $ allAcceptPathsFrom workflows (ruleResult $ fst $ last combo)
+      -- (Yes, it was totally fine, even without the allSameResult optimizations.)
+      allSameResult = length (groupOn ruleResult workflow) == 1
+  in if allSameResult
+     then allAcceptPathsFrom workflows (ruleResult $ head workflow)
+     else concatMap pathsFrom combos
+
+howManySatisfy :: [(WorkflowRule, Bool)] -> Int
+howManySatisfy rules =
+  let satisfiesAllRelevantConditions rt n = all (n `satisfies`) $ filter (relevantTo rt . fst) rules
+      nSatisfyType rt = length $ filter (satisfiesAllRelevantConditions rt) [1..4000]
+      nSatisfyEach = map nSatisfyType [X,M,A,S]
+  in product nSatisfyEach
+
+relevantTo :: RatingType -> WorkflowRule -> Bool
+relevantTo t (rt, _, _, _) = t == rt
+
+satisfies :: Int -> (WorkflowRule, Bool) -> Bool
+satisfies n ((_, LessThan, val, _), expected) = (n < val) == expected
+satisfies n ((_, GreaterThan, val, _), expected) = (n > val) == expected
