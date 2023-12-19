@@ -10,6 +10,7 @@ import Data.Map (Map)
 import qualified Data.Map.Strict as Map
 import Data.Maybe (mapMaybe)
 
+data RatingType = X | M | A | S deriving (Eq, Show)
 data PartRating = PartRating
     { x :: Int
     , m :: Int
@@ -17,7 +18,7 @@ data PartRating = PartRating
     , s :: Int
     } deriving (Show)
 data Op = LessThan | GreaterThan deriving (Eq, Show)
-type WorkflowRule = (PartRating -> Int, Op, Int, String)
+type WorkflowRule = (RatingType, Op, Int, String)
 type Workflows = Map String [WorkflowRule]
 data Result = Accept | Reject deriving (Eq, Show)
 
@@ -46,9 +47,15 @@ flowThrough rules part = head $ mapMaybe (`applyRule` part) rules
 
 applyRule :: WorkflowRule -> PartRating -> Maybe String
 applyRule (whichRating, LessThan, threshold, result) part =
-  if whichRating part < threshold then Just result else Nothing
+  if rating whichRating part < threshold then Just result else Nothing
 applyRule (whichRating, GreaterThan, threshold, result) part =
-  if whichRating part > threshold then Just result else Nothing
+  if rating whichRating part > threshold then Just result else Nothing
+
+rating :: RatingType -> PartRating -> Int
+rating X = x
+rating M = m
+rating A = a
+rating S = s
 
 parseWorkflow :: String -> (String, [WorkflowRule])
 parseWorkflow line =
@@ -58,17 +65,17 @@ parseWorkflow line =
   in (name, map parseWorkflowRule ruleList)
 
 parseWorkflowRule :: String -> WorkflowRule
-parseWorkflowRule r | all isAlpha r = (x, GreaterThan, -1, r) -- a hack
+parseWorkflowRule r | all isAlpha r = (X, GreaterThan, -1, r) -- a hack
 parseWorkflowRule (r:o:rest) =
   let parts = splitOn ":" rest
   in (parseWhichRating r, parseOp o, read (head parts), last parts)
 parseWorkflowRule r = error ("could not parse rule: " ++ r)
 
-parseWhichRating :: Char -> (PartRating -> Int)
-parseWhichRating 'x' = x
-parseWhichRating 'm' = m
-parseWhichRating 'a' = a
-parseWhichRating 's' = s
+parseWhichRating :: Char -> RatingType
+parseWhichRating 'x' = X
+parseWhichRating 'm' = M
+parseWhichRating 'a' = A
+parseWhichRating 's' = S
 parseWhichRating  c  = error ("unknown rating type: " ++ [c])
 
 parseOp :: Char -> Op
