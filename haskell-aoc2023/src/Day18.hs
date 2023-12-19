@@ -18,7 +18,6 @@ data Dir = Up | Down | L | R deriving (Eq, Ord)
 
 data TerrainState = Empty | Trench deriving (Eq, Show)
 type TerrainLayout = Map Coord TerrainState -- could be a Set? we'll see
-data DigState = Outside | EnteringTrench | Inside | ExitingTrench deriving (Eq, Show)
 
 doPart1 :: [Char] -> Int
 doPart1 input =
