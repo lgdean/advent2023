@@ -15,7 +15,7 @@ data Pulse = Low | High deriving (Eq, Show)
 type Message = (String, String, Pulse)
 
 data FlipFlopState = On | Off deriving (Eq, Show)
-data Module = FlipFlop FlipFlopState | Conjunction (Map String Pulse) | Broadcast deriving (Eq)
+data Module = FlipFlop FlipFlopState | Conjunction (Map String Pulse) | Broadcast deriving (Eq, Show)
 type ModuleStates = Map String Module   -- what modules do we have?
 type ModuleConfig = Map String [String] -- and how are they hooked up?
 initFlipFlop :: Module
@@ -27,25 +27,27 @@ doPart1 :: [Char] -> Int
 doPart1 input =
   let (moduleConfig, modulePreInitStates) = parseConfig input
       moduleInitStates = initializeConjunctions moduleConfig modulePreInitStates
-      result = pushButton moduleConfig moduleInitStates
-      totals = map (1000 *) [count Low result, count High result]
-  in product totals
+      countPulses (_, ps) = (count Low ps, count High ps)
+      results = iterate (\(s, _) -> pushButton moduleConfig s) (moduleInitStates, [])
+      totals = take 1000 $ tail $ map countPulses results
+  in sum (map fst totals) * sum (map snd totals)
 
-pushButton :: ModuleConfig -> ModuleStates -> [Pulse]
+pushButton :: ModuleConfig -> ModuleStates -> (ModuleStates, [Pulse])
 pushButton config moduleStates =
-  let result = propagate config moduleStates [("button", "broadcaster", Low)]
-  in map (\(_, _, p) -> p) result
+  let (newState, result) = propagate config moduleStates [("button", "broadcaster", Low)]
+  in (newState, map (\(_, _, p) -> p) result)
 
-propagate :: ModuleConfig -> ModuleStates -> [(String, String, Pulse)] -> [Message]
+propagate :: ModuleConfig -> ModuleStates -> [(String, String, Pulse)] -> (ModuleStates, [Message])
 propagate config modules messages =
   let fullRound = scanl (\(acc, _) m -> propagateOne config acc m) (modules, []) messages :: [(ModuleStates, [Message])]
       nextRound = concatMap snd fullRound :: [Message]
       nextRoundState = fst $ last fullRound :: ModuleStates
   in case nextRound of
-       [] -> messages
-       _ -> messages ++ propagate config nextRoundState nextRound
+       [] -> (nextRoundState, messages)
+       _ -> (\(s, ms) -> (s, messages ++ ms)) $ propagate config nextRoundState nextRound
 
 propagateOne :: ModuleConfig -> ModuleStates -> (String, String, Pulse) -> (ModuleStates, [(String, String, Pulse)])
+propagateOne _      modules _msg@(_  , dest, _    ) | dest `Map.notMember` modules = (modules, [])
 propagateOne config modules _msg@(src, dest, pulse) =
   let srcMod = modules Map.! dest
       _result@(newState, nextP) = sendPulse (pulse, src) srcMod
