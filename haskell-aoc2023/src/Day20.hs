@@ -10,6 +10,7 @@ import Data.List.Split (splitOn)
 import Data.Map (Map)
 import qualified Data.Map.Strict as Map
 import Data.Maybe (mapMaybe)
+import Data.Tuple.Extra (second)
 
 import Lib (count)
 
@@ -46,9 +47,9 @@ propagate config modules messages =
       nextRoundState = fst $ last fullRound :: ModuleStates
   in case nextRound of
        [] -> (nextRoundState, messages)
-       _ -> (\(s, ms) -> (s, messages ++ ms)) $ propagate config nextRoundState nextRound
+       _  -> second (messages ++) $ propagate config nextRoundState nextRound
 
-propagateOne :: ModuleConfig -> ModuleStates -> (String, String, Pulse) -> (ModuleStates, [(String, String, Pulse)])
+propagateOne :: ModuleConfig -> ModuleStates -> Message -> (ModuleStates, [Message])
 propagateOne _      modules _msg@(_  , dest, _    ) | dest `Map.notMember` modules = (modules, [])
 propagateOne config modules _msg@(src, dest, pulse) =
   let srcMod = modules Map.! dest
