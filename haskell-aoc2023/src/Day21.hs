@@ -12,14 +12,14 @@ import qualified Data.Set as Set
 
 data Tile = Garden | Rock deriving (Eq, Show)
 type Coord = (Int, Int)
-type TileGrid = Map Coord Tile
+type TileGrid = (Int, Map Coord Tile)
 
 doPart1 :: Int -> [Char] -> Int
 doPart1 nSteps input =
   let charGrid = parseGrid input
       (x,y) = fst $ head $ dropWhile ((/= 'S') . snd) $ Map.toList charGrid
       tileGrid = Map.map parseTile $ Map.mapKeys (add (-x, -y)) charGrid
-      result = reachableFrom tileGrid nSteps (Set.singleton (0,0)) :: Set Coord
+      result = reachableFrom (x, tileGrid) nSteps (Set.singleton (0,0)) :: Set Coord
   in Set.size result
 
 -- could improve by noting that n+1 is exactly n-1 plus new ones
@@ -32,8 +32,10 @@ reachableFrom grid nSteps posns =
   in reachableFrom grid (nSteps-1) gardenNeighbors
 
 isGardenAt :: TileGrid -> Coord -> Bool
-isGardenAt grid pos =
-  grid Map.! pos /= Rock
+isGardenAt (offset, grid) (x,y) =
+  let width = offset * 2 + 1 -- start position always in center
+      adjusted n = (n + offset) `mod` width - offset
+  in grid Map.! (adjusted x, adjusted y) /= Rock
 
 add :: (Int, Int) -> (Int, Int) -> (Int, Int)
 add (a,b) (x,y) = (a+x, b+y)
