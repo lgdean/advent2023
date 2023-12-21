@@ -6,8 +6,8 @@ module Day21
 
 import Data.Map (Map)
 import qualified Data.Map.Strict as Map
-import Data.Set (Set)
-import qualified Data.Set as Set
+import Data.HashSet (HashSet)
+import qualified Data.HashSet as HashSet
 
 
 data Tile = Garden | Rock deriving (Eq, Show)
@@ -19,16 +19,16 @@ doPart1 nSteps input =
   let charGrid = parseGrid input
       (x,y) = fst $ head $ dropWhile ((/= 'S') . snd) $ Map.toList charGrid
       tileGrid = Map.map parseTile $ Map.mapKeys (add (-x, -y)) charGrid
-      result = reachableFrom (x, tileGrid) nSteps (Set.singleton (0,0)) :: Set Coord
-  in Set.size result
+      result = reachableFrom (x, tileGrid) nSteps (HashSet.singleton (0,0)) :: HashSet Coord
+  in HashSet.size result
 
 -- could improve by noting that n+1 is exactly n-1 plus new ones
 -- BUT FIRST try brute force
-reachableFrom :: TileGrid -> Int -> Set Coord -> Set Coord
+reachableFrom :: TileGrid -> Int -> HashSet Coord -> HashSet Coord
 reachableFrom _ 0 posns = posns
 reachableFrom grid nSteps posns =
-  let neighbors = Set.unions $ Set.map neighborCoords posns
-      gardenNeighbors = Set.filter (grid `isGardenAt`) neighbors
+  let neighbors = HashSet.unions $ map neighborCoords $ HashSet.toList posns
+      gardenNeighbors = HashSet.filter (grid `isGardenAt`) neighbors
   in reachableFrom grid (nSteps-1) gardenNeighbors
 
 isGardenAt :: TileGrid -> Coord -> Bool
@@ -40,8 +40,8 @@ isGardenAt (offset, grid) (x,y) =
 add :: (Int, Int) -> (Int, Int) -> (Int, Int)
 add (a,b) (x,y) = (a+x, b+y)
 
-neighborCoords :: (Int, Int) -> Set (Int, Int)
-neighborCoords (x,y) = Set.fromList [ (x+1,y), (x-1,y), (x,y+1), (x,y-1) ]
+neighborCoords :: (Int, Int) -> HashSet (Int, Int)
+neighborCoords (x,y) = HashSet.fromList [ (x+1,y), (x-1,y), (x,y+1), (x,y-1) ]
 
 -- copied once again! I did notice that the S is in the middle of the grid,
 -- but for now will assume it's fine to do my usual thing of (0,0) top left.
