@@ -5,6 +5,7 @@ module Day20
       doPart2
     ) where
 
+import Control.Monad (guard)
 import Data.List.Split (splitOn)
 import Data.Map (Map)
 import qualified Data.Map.Strict as Map
@@ -107,7 +108,7 @@ doPart2 input =
       results = iterate (\(s, _) -> pushButton2 moduleConfig s) (moduleInitStates, [])
       -- $ grep rx inputs/day20
       -- &qb -> rx
-      highMessageToQb (src, dest, p) = if p == High && dest == "qb" then Just (src, p) else Nothing
+      highMessageToQb (src, dest, p) = guard (p == High && dest == "qb") >> return (src, p)
       maybeHighMessage (_, msgs) = mapMaybe highMessageToQb msgs :: [(String, Pulse)]
       highsToQb = zip [0..] (map maybeHighMessage results) :: [(Int, [(String, Pulse)])]
       -- qb takes 4 inputs, and maybe there is some cycling happening...
