@@ -22,14 +22,23 @@ doPart1 nSteps input =
       result = reachableFrom (x, tileGrid) nSteps (HashSet.singleton (0,0)) :: HashSet Coord
   in HashSet.size result
 
--- could improve by noting that n+1 is exactly n-1 plus new ones
--- BUT FIRST try brute force
+-- TODO The puzzle input has the same property as the example:
+-- no rocks around its outer edge. Could simplify properties of repetition?
+
 reachableFrom :: TileGrid -> Int -> HashSet Coord -> HashSet Coord
 reachableFrom _ 0 posns = posns
 reachableFrom grid nSteps posns =
+  reachableFrom' grid nSteps (HashSet.empty, posns) posns
+
+-- improved by noting that n+1 is exactly n-1 plus new ones
+reachableFrom' :: TileGrid -> Int -> (HashSet Coord, HashSet Coord) -> HashSet Coord -> HashSet Coord
+reachableFrom' _ 0 (_, prevSet) _ = prevSet
+reachableFrom' grid nSteps (theOneBefore, prevSet) posns =
   let neighbors = HashSet.unions $ map neighborCoords $ HashSet.toList posns
-      gardenNeighbors = HashSet.filter (grid `isGardenAt`) neighbors
-  in reachableFrom grid (nSteps-1) gardenNeighbors
+      newNeighbors = HashSet.difference neighbors theOneBefore
+      gardenNeighbors = HashSet.filter (grid `isGardenAt`) newNeighbors
+      newAndOld = HashSet.union theOneBefore gardenNeighbors
+  in reachableFrom' grid (nSteps-1) (prevSet, newAndOld) gardenNeighbors
 
 isGardenAt :: TileGrid -> Coord -> Bool
 isGardenAt (offset, grid) (x,y) =

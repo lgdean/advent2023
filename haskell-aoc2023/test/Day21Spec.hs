@@ -27,7 +27,7 @@ spec = do
 
 --    it "can handle 5x that work, haha" $ do
 --      input <- readFile "inputs/day21-example"
---      doPart1 500 input `shouldBe` 167004 -- 80 seconds... ok under 60 with HashSet
+--      doPart1 500 input `shouldBe` 167004 -- 80 seconds... under 60... under 1!
 
 --    it "can handle even larger given example" $ do
 --      input <- readFile "inputs/day21-example"
