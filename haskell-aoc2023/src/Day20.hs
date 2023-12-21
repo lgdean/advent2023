@@ -11,8 +11,6 @@ import Data.Map (Map)
 import qualified Data.Map.Strict as Map
 import Data.Maybe (mapMaybe)
 
-import Debug.Trace (trace)
-
 import Lib (count)
 
 data Pulse = Low | High deriving (Eq, Show)
@@ -41,7 +39,7 @@ pushButton config moduleStates =
   let (newState, result) = propagate config moduleStates [("button", "broadcaster", Low)]
   in (newState, map (\(_, _, p) -> p) result)
 
-propagate :: ModuleConfig -> ModuleStates -> [(String, String, Pulse)] -> (ModuleStates, [Message])
+propagate :: ModuleConfig -> ModuleStates -> [Message] -> (ModuleStates, [Message])
 propagate config modules messages =
   let fullRound = scanl (\(acc, _) m -> propagateOne config acc m) (modules, []) messages :: [(ModuleStates, [Message])]
       nextRound = concatMap snd fullRound :: [Message]
@@ -113,8 +111,8 @@ doPart2 input =
       highsToQb = zip [0..] (map maybeHighMessage results) :: [(Int, [(String, Pulse)])]
       -- qb takes 4 inputs, and maybe there is some cycling happening...
       firstFourHighs = take 4 $ filter (not . null . snd) highsToQb
-      -- I just visually inspected that they were for 4 different inputs
-  in trace (show firstFourHighs) $ foldl lcm 1 $ map fst firstFourHighs
+      -- I just visually inspected that they were for the 4 different inputs
+  in foldl lcm 1 $ map fst firstFourHighs
 
 pushButton2 :: ModuleConfig -> ModuleStates -> (ModuleStates, [Message])
 pushButton2 config moduleStates =
