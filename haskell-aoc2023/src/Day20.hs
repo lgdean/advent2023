@@ -2,12 +2,15 @@
 module Day20
     (
       doPart1,
---      doPart2
+      doPart2
     ) where
 
 import Data.List.Split (splitOn)
 import Data.Map (Map)
 import qualified Data.Map.Strict as Map
+import Data.Maybe (mapMaybe)
+
+import Debug.Trace (trace)
 
 import Lib (count)
 
@@ -95,3 +98,24 @@ parseModule "broadcaster" = ("broadcaster", Broadcast)
 parseModule ('%':name)  = (name, initFlipFlop)
 parseModule ('&':name)  = (name, initConjunction []) -- oops, don't yet know inputs
 parseModule otherString = error ("cannot parse Module: " ++ otherString)
+
+
+doPart2 :: [Char] -> Int
+doPart2 input =
+  let (moduleConfig, modulePreInitStates) = parseConfig input
+      moduleInitStates = initializeConjunctions moduleConfig modulePreInitStates
+      results = iterate (\(s, _) -> pushButton2 moduleConfig s) (moduleInitStates, [])
+      -- $ grep rx inputs/day20
+      -- &qb -> rx
+      highMessageToQb (src, dest, p) = if p == High && dest == "qb" then Just (src, p) else Nothing
+      maybeHighMessage (_, msgs) = mapMaybe highMessageToQb msgs :: [(String, Pulse)]
+      highsToQb = zip [0..] (map maybeHighMessage results) :: [(Int, [(String, Pulse)])]
+      -- qb takes 4 inputs, and maybe there is some cycling happening...
+      firstFourHighs = take 4 $ filter (not . null . snd) highsToQb
+      -- I just visually inspected that they were for 4 different inputs
+  in trace (show firstFourHighs) $ foldl lcm 1 $ map fst firstFourHighs
+
+pushButton2 :: ModuleConfig -> ModuleStates -> (ModuleStates, [Message])
+pushButton2 config moduleStates =
+  let (newState, result) = propagate config moduleStates [("button", "broadcaster", Low)]
+  in (newState, result)
