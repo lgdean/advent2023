@@ -28,9 +28,12 @@ reachableFrom :: TileGrid -> Int -> Set Coord -> Set Coord
 reachableFrom _ 0 posns = posns
 reachableFrom grid nSteps posns =
   let neighbors = Set.unions $ Set.map neighborCoords posns
-      isGarden pos = grid Map.! pos /= Rock
-      gardenNeighbors = Set.filter isGarden neighbors
+      gardenNeighbors = Set.filter (grid `isGardenAt`) neighbors
   in reachableFrom grid (nSteps-1) gardenNeighbors
+
+isGardenAt :: TileGrid -> Coord -> Bool
+isGardenAt grid pos =
+  grid Map.! pos /= Rock
 
 add :: (Int, Int) -> (Int, Int) -> (Int, Int)
 add (a,b) (x,y) = (a+x, b+y)
