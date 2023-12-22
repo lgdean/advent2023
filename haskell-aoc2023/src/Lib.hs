@@ -12,6 +12,7 @@ module Lib
     , fixedPoint
     , iterateUntilFixedPoint
     , takeUntilFixedPoint
+    , iterateUntilRepeat
     , applyNTimesDetectingCycle
     ) where
 
@@ -75,10 +76,22 @@ takeUntilFixedPoint (x:y:rest)
   | x == y    = [x]
   | otherwise = x : takeUntilFixedPoint (y:rest)
 
+iterateUntilRepeat :: (Eq a) => (a -> a) -> a -> [a]
+iterateUntilRepeat = iterateUntilRepeat' []
+
+-- could perhaps be made faster with use of a Set (if it's useful at all)
+iterateUntilRepeat' :: (Eq a) => [a] -> (a -> a) -> a -> [a]
+iterateUntilRepeat' soFar f currState =
+  let beenSeen = elemIndex currState soFar
+      nextState = f currState
+  in case beenSeen of
+    Nothing -> currState : iterateUntilRepeat' (currState:soFar) f nextState
+    Just _  -> [currState]
+
 applyNTimesDetectingCycle :: (Eq a) => Int -> (a -> a) -> a -> a
 applyNTimesDetectingCycle = applyNTimesDetectingCycle' []
 
--- could perhaps be made faster with use of Set
+-- could perhaps be made faster with use of a Map
 applyNTimesDetectingCycle' :: (Eq a) => [a] -> Int -> (a -> a) -> a -> a
 applyNTimesDetectingCycle'   _   0 _ currState = currState
 applyNTimesDetectingCycle' soFar n f currState =
