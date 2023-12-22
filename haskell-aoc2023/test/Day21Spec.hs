@@ -31,7 +31,11 @@ spec = do
 
 --    it "can handle even larger given example" $ do
 --      input <- readFile "inputs/day21-example"
---      doPart1 1000 input `shouldBe` 668697 -- haven't tried it
+--      doPart1 1000 input `shouldBe` 668697 -- 2.5 or so
+
+--    it "can do still more" $ do
+--      input <- readFile "inputs/day21-example"
+--      doPart1 5000 input `shouldBe` 16733044 -- 93 seconds
 
 --    it "can solve Part 2" $ do
 --      input <- readFile "inputs/day21"
